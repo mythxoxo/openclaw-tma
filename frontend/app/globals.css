@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tg-theme-bg-color: #ffffff;
+  --tg-theme-text-color: #111827;
+  --tg-theme-hint-color: #6b7280;
+  --tg-theme-link-color: #2563eb;
+  --tg-theme-button-color: #2563eb;
+  --tg-theme-button-text-color: #ffffff;
+}
+
+html,
+body {
+  background: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+}
+
+body {
+  min-height: 100vh;
+}
+
+input,
+textarea,
+select {
+  @apply rounded-md border border-slate-300 bg-white/70 p-2 text-sm text-slate-900;
+}
+
+button {
+  @apply rounded-md px-3 py-2 text-sm font-medium;
+}
