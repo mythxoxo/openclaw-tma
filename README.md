@@ -36,3 +36,5 @@ Your Gateway must:
 - Gateway URL and API token are stored in **sessionStorage** (not localStorage).
 - REST calls use `Authorization: Bearer <token>`.
 - WebSocket auth uses `?token=<token>`.
+
+trigger redeploy
