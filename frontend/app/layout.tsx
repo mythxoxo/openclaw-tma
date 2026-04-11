@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru">
       <body>
         <Providers>
-          <main className="mx-auto max-w-4xl p-4">{children}</main>
+          <main className="tma-shell">{children}</main>
           <BottomNav />
         </Providers>
       </body>

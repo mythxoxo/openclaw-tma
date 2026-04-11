@@ -25,23 +25,10 @@ export function GatewayConnection() {
   }
 
   return (
-    <form className="space-y-3" onSubmit={onSubmit}>
-      <input
-        required
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        className="w-full rounded border p-2"
-        placeholder="Gateway URL (wss://... или https://...)"
-      />
-      <input
-        required
-        value={token}
-        onChange={(e) => setToken(e.target.value)}
-        className="w-full rounded border p-2"
-        placeholder="API Token"
-        type="password"
-      />
-      <button className="w-full rounded bg-blue-600 p-2 text-white" disabled={loading}>
+    <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      <input required value={url} onChange={(e) => setUrl(e.target.value)} placeholder="wss://your-server.com" />
+      <input required value={token} onChange={(e) => setToken(e.target.value)} placeholder="Ваш API токен" type="password" />
+      <button className="tma-button w-full" disabled={loading}>
         {loading ? 'Подключение...' : 'Подключиться'}
       </button>
     </form>

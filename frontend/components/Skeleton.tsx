@@ -1,8 +1,12 @@
-export function Skeleton({ lines = 4 }: { lines?: number }) {
+export function Skeleton({ lines = 4, className = '' }: { lines?: number; className?: string }) {
   return (
-    <div className="animate-pulse space-y-2">
+    <div className={`tma-skeleton ${className}`}>
       {Array.from({ length: lines }).map((_, i) => (
-        <div key={i} className="h-4 rounded bg-gray-200" />
+        <div
+          key={i}
+          className="tma-skeleton-line"
+          style={{ width: `${100 - (i % 3) * 18}%`, height: i === 0 ? 18 : 16 }}
+        />
       ))}
     </div>
   )

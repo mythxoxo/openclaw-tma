@@ -1,9 +1,19 @@
 'use client'
 
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { Skeleton } from '@/components/Skeleton'
 import { Toast } from '@/components/Toast'
 import { useAppStore } from '@/lib/store'
+
+function ThinkingDots() {
+  return (
+    <span className="tma-thinking" aria-label="Агент думает">
+      <span />
+      <span />
+      <span />
+    </span>
+  )
+}
 
 export default function ChatPage() {
   const [input, setInput] = useState('')
@@ -32,36 +42,93 @@ export default function ChatPage() {
     setInput('')
   }
 
+  const hasMessages = useMemo(() => messages.length > 0, [messages])
+
   return (
-    <section className="space-y-3">
+    <section className="tma-chat-shell">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Чат</h1>
-        {isReconnecting && <span className="text-xs text-orange-600">Переподключение...</span>}
-      </div>
-      {agentStatus === 'thinking' && <p className="text-sm text-gray-500">Агент думает...</p>}
-      {initialLoading ? (
-        <Skeleton lines={6} />
-      ) : (
-        <div className="max-h-[58vh] space-y-2 overflow-y-auto rounded border p-2">
-          {messages.map((m) => (
-            <div key={m.id} className="rounded bg-gray-50 p-2 text-sm">
-              <b>{m.role}:</b> {m.content}
-            </div>
-          ))}
-          <div ref={bottomRef} />
+        <div>
+          <h1 className="tma-title" style={{ fontSize: 22 }}>Чат</h1>
+          <p className="tma-subtitle">
+            {isReconnecting ? 'Переподключение к Gateway…' : 'Диалог с агентом в стиле Telegram'}
+          </p>
         </div>
-      )}
-      <form onSubmit={submit} className="flex gap-2">
-        <input value={input} onChange={(e) => setInput(e.target.value)} className="flex-1 rounded border p-2" />
-        <button className="rounded bg-blue-600 px-3 py-2 text-white">Send</button>
-      </form>
-      <div className="flex gap-2">
-        <button className="rounded border px-3 py-2" onClick={stopGeneration} disabled={!isStreaming}>
-          Stop
-        </button>
-        <button className="rounded border px-3 py-2" onClick={clearChat}>
-          Очистить
-        </button>
+        <div className="flex items-center gap-8">
+          {agentStatus === 'thinking' && (
+            <div className="flex items-center gap-2 text-sm tma-muted">
+              <span>Агент думает</span>
+              <ThinkingDots />
+            </div>
+          )}
+          {hasMessages && (
+            <button className="tma-chip" onClick={clearChat}>
+              Очистить
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="tma-chat-scroll">
+        {initialLoading ? (
+          <Skeleton lines={6} />
+        ) : (
+          <div className="tma-messages-list">
+            {messages.map((m) => {
+              if (m.role === 'tool_call' || m.role === 'tool_result') {
+                return (
+                  <div key={m.id} className="tma-message-row tma-message-row-tool">
+                    <details className="tma-card tma-collapsible" open={false}>
+                      <summary className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span>{m.role === 'tool_call' ? '🔧' : '✅'}</span>
+                          <div>
+                            <div className="font-semibold">{m.role === 'tool_call' ? 'Вызов инструмента' : 'Результат инструмента'}</div>
+                            <div className="text-sm tma-muted">Нажми, чтобы развернуть</div>
+                          </div>
+                        </div>
+                        <span className="tma-muted text-sm">▾</span>
+                      </summary>
+                      <div className="tma-collapsible-content">{m.content}</div>
+                    </details>
+                  </div>
+                )
+              }
+
+              const isUser = m.role === 'user'
+              return (
+                <div key={m.id} className={`tma-message-row ${isUser ? 'tma-message-row-user' : 'tma-message-row-agent'}`}>
+                  <div className={`tma-message-bubble ${isUser ? 'tma-message-user' : 'tma-message-agent'}`}>{m.content}</div>
+                </div>
+              )
+            })}
+            {!hasMessages && (
+              <div className="tma-card text-center">
+                <p className="tma-subtitle">Здесь появится история общения с агентом.</p>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+        )}
+      </div>
+
+      <div className="tma-chat-input-wrap">
+        <form onSubmit={submit} className="tma-chat-input-card">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Напишите сообщение…"
+            rows={1}
+            style={{ maxHeight: 140 }}
+          />
+          <button className="tma-button" style={{ width: 48, minWidth: 48, padding: 0 }} aria-label="Отправить">
+            ➜
+          </button>
+        </form>
+        <div className="mt-2 flex justify-end">
+          <button className="tma-chip" onClick={stopGeneration} disabled={!isStreaming}>
+            Остановить
+          </button>
+        </div>
       </div>
       <Toast />
     </section>

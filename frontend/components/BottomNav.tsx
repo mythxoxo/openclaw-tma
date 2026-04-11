@@ -15,24 +15,18 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-white/90 backdrop-blur" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-      <ul className="mx-auto grid max-w-4xl grid-cols-5">
+    <nav className="tma-bottom-nav">
+      <div className="tma-bottom-nav-inner">
         {items.map((item) => {
           const active = pathname === item.href
           return (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="flex flex-col items-center justify-center py-2 text-xs"
-                style={{ color: active ? 'var(--tg-theme-button-color)' : 'var(--tg-theme-hint-color)' }}
-              >
-                <span>{item.icon}</span>
-                <span>{item.label}</span>
-              </Link>
-            </li>
+            <Link key={item.href} href={item.href} className={`tma-nav-item ${active ? 'tma-nav-item-active' : ''}`}>
+              <span aria-hidden="true">{item.icon}</span>
+              <span className="text-[11px] font-medium">{item.label}</span>
+            </Link>
           )
         })}
-      </ul>
+      </div>
     </nav>
   )
 }

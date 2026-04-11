@@ -2,11 +2,13 @@
 
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
-    <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
-      <p>Что-то пошло не так</p>
-      <button className="rounded bg-blue-600 px-4 py-2 text-white" onClick={reset}>
-        Попробовать снова
-      </button>
+    <div className="tma-page" style={{ minHeight: '40vh', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+      <div className="tma-card flex flex-col items-center gap-4">
+        <p style={{ margin: 0 }}>Что-то пошло не так</p>
+        <button className="tma-button px-4" onClick={reset}>
+          Попробовать снова
+        </button>
+      </div>
     </div>
   )
 }
